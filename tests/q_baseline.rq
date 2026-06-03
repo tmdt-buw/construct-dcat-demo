@@ -1,0 +1,6 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+# Baseline DCAT/DCAT-AP discovery: best a consumer can do is match free-text keywords.
+SELECT ?d WHERE {
+  ?d a dcat:Dataset ; dcat:keyword ?k .
+  FILTER(CONTAINS(LCASE(STR(?k)), "wall"))
+}

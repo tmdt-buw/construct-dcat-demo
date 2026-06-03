@@ -1,0 +1,12 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX cx:   <https://w3id.org/cx#>
+PREFIX ifc:  <http://example.org/ifc#>
+PREFIX bot:  <https://w3id.org/bot#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# Construct-DCAT discovery: typed asset link + subclass reasoning + ontology commitment.
+SELECT ?d WHERE {
+  ?d a dcat:Dataset ;
+     cx:describesAssetType ?cls ;
+     cx:usesOntology bot: .
+  ?cls rdfs:subClassOf* ifc:IfcWall .
+}

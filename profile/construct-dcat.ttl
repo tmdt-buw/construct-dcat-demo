@@ -1,0 +1,73 @@
+@prefix cx:    <https://w3id.org/cx#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix aas:   <https://admin-shell.io/aas/3/0/> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+
+#################################################################
+#  Construct-DCAT — minimal semantic-anchoring extension to DCAT
+#
+#  This is a WORKED-EXAMPLE profile produced via the requirements-driven
+#  workflow of the visual profile editor (tmdt-buw/visual-profile-editor).
+#  It is intentionally minimal: it conforms to DCAT *in principle* (every
+#  cx:*Dataset is an rdfs:subClassOf dcat:Dataset, and all anchoring
+#  properties have dcat:Dataset in their domain) and does NOT attempt full
+#  DCAT-AP conformance, cardinalities, or controlled-vocabulary obligations.
+#################################################################
+
+<https://w3id.org/cx>
+    a owl:Ontology ;
+    rdfs:label "Construct-DCAT (minimal worked-example profile)" ;
+    rdfs:comment "Minimal DCAT extension anchoring construction datasets to external semantic resources. Illustrative profile generated via the visual profile editor workflow." ;
+    owl:versionInfo "0.1-demo" .
+
+#################################################################
+#  Dataset subclasses (Representation heterogeneity)
+#################################################################
+
+cx:AASDataset
+    a owl:Class ;
+    rdfs:subClassOf dcat:Dataset ;
+    rdfs:label "AAS Dataset" ;
+    rdfs:comment "A dcat:Dataset whose primary representation is an Asset Administration Shell model." .
+
+cx:BIMDataset
+    a owl:Class ;
+    rdfs:subClassOf dcat:Dataset ;
+    rdfs:label "BIM Dataset" ;
+    rdfs:comment "A dcat:Dataset whose primary representation is a BIM/IFC model." .
+
+#################################################################
+#  Anchoring properties (Ontological fragmentation + Granularity)
+#################################################################
+
+cx:describesAssetType
+    a owl:ObjectProperty ;
+    rdfs:domain dcat:Dataset ;
+    rdfs:range owl:Class ;
+    rdfs:label "describes asset type" ;
+    rdfs:comment "Links a dataset to the ontology class of the physical asset/building element it is about (e.g. an IFC class). Use when a formal class is available." .
+
+cx:usesOntology
+    a owl:ObjectProperty ;
+    rdfs:domain dcat:Dataset ;
+    rdfs:range owl:Ontology ;
+    rdfs:label "uses ontology" ;
+    rdfs:comment "Links a dataset to an ontology or vocabulary it commits to." .
+
+cx:hasAASSubmodel
+    a owl:ObjectProperty ;
+    rdfs:domain dcat:Dataset ;
+    rdfs:range aas:Submodel ;
+    rdfs:label "has AAS submodel" ;
+    rdfs:comment "Links a dataset to a relevant AAS submodel exposed by an operational digital twin." .
+
+cx:alignsWithConcept
+    a owl:ObjectProperty ;
+    rdfs:domain dcat:Dataset ;
+    rdfs:range skos:Concept ;
+    rdfs:label "aligns with concept" ;
+    rdfs:comment "Links a dataset to a SKOS concept it is classified under. Use when only a controlled term (not a formal class) is available; looser than cx:describesAssetType." .

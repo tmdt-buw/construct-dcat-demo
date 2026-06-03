@@ -1,0 +1,81 @@
+@prefix cx:    <https://w3id.org/cx#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix ifc:   <http://example.org/ifc#> .
+@prefix bot:   <https://w3id.org/bot#> .
+@prefix aas:   <https://admin-shell.io/aas/3/0/> .
+@prefix ex:    <http://example.org/cat#> .
+
+#################################################################
+#  Slice of the IFC class hierarchy (so subClassOf* has something to walk).
+#  IfcWallStandardCase and IfcWallElementedCase are subtypes of IfcWall.
+#################################################################
+ifc:IfcWall              a owl:Class .
+ifc:IfcWallStandardCase  rdfs:subClassOf ifc:IfcWall .
+ifc:IfcWallElementedCase rdfs:subClassOf ifc:IfcWall .
+ifc:IfcDoor              a owl:Class .
+ifc:IfcSensor            a owl:Class .
+
+#################################################################
+#  Catalog of 8 datasets, annotated with the Construct-DCAT profile.
+#  Designed to exercise the four heterogeneity dimensions.
+#  Ground truth for CQ "walls (or subtypes) AND committing to BOT": D1, D5, D8
+#################################################################
+
+ex:catalog a dcat:Catalog ;
+    dct:title "Example construction dataspace catalog" ;
+    dcat:dataset ex:D1, ex:D2, ex:D3, ex:D4, ex:D5, ex:D6, ex:D7, ex:D8 .
+
+# D1 — TRUE: an IfcWall description that commits to BOT
+ex:D1 a cx:BIMDataset ;
+    dct:title "Wall layout, Building A (design)" ;
+    dcat:keyword "wall layout BIM design" ;
+    cx:describesAssetType ifc:IfcWall ;
+    cx:usesOntology bot: .
+
+# D2 — FALSE: a wall *schedule* (keyword says "wall" but it's not a wall description)
+ex:D2 a dcat:Dataset ;
+    dct:title "Wall material schedule, Building A" ;
+    dcat:keyword "wall schedule materials" ;
+    cx:usesOntology bot: .
+
+# D3 — FALSE: a wall-*mounted* sensor (keyword says "wall" but the asset is a sensor)
+ex:D3 a dcat:Dataset ;
+    dct:title "Wall-mounted sensor feed, Zone 3" ;
+    dcat:keyword "wall sensor IoT" ;
+    cx:describesAssetType ifc:IfcSensor .
+
+# D4 — FALSE: doors, not walls
+ex:D4 a cx:BIMDataset ;
+    dct:title "Door schedule, Building A" ;
+    dcat:keyword "door schedule" ;
+    cx:describesAssetType ifc:IfcDoor ;
+    cx:usesOntology bot: .
+
+# D5 — TRUE: an IFC wall SUBTYPE; keyword never says "wall"
+ex:D5 a cx:BIMDataset ;
+    dct:title "Standard-case walls, Building B" ;
+    dcat:keyword "partition elements" ;
+    cx:describesAssetType ifc:IfcWallStandardCase ;
+    cx:usesOntology bot: .
+
+# D6 — FALSE: uses BOT but is about topology, not walls
+ex:D6 a dcat:Dataset ;
+    dct:title "Topology graph, Building B" ;
+    dcat:keyword "topology rooms zones" ;
+    cx:usesOntology bot: .
+
+# D7 — FALSE: HVAC, unrelated
+ex:D7 a dcat:Dataset ;
+    dct:title "HVAC ducts, Building C" ;
+    dcat:keyword "hvac ducts mechanical" .
+
+# D8 — TRUE: another IFC wall SUBTYPE; keyword never says "wall"
+ex:D8 a cx:BIMDataset ;
+    dct:title "Elemented walls, Building C facade" ;
+    dcat:keyword "facade buildup" ;
+    cx:describesAssetType ifc:IfcWallElementedCase ;
+    cx:usesOntology bot: .

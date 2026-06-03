@@ -1,0 +1,63 @@
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix cx:    <https://w3id.org/cx#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+#  SHACL shapes for the Construct-DCAT worked-example profile.
+#
+#  Scope: a minimal "conform in principle" shape. It checks that
+#  Construct-DCAT annotations are used correctly on a dcat:Dataset.
+#  It does NOT enforce full DCAT-AP mandatory/recommended cardinalities.
+#################################################################
+
+cx:DatasetShape
+    a sh:NodeShape ;
+    sh:targetClass dcat:Dataset ;
+
+    # A title is recommended for a discoverable dataset (kept soft: sh:Warning).
+    sh:property [
+        sh:path dct:title ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Warning ;
+        sh:message "Dataset should have a dct:title for discoverability." ;
+    ] ;
+
+    # If cx:describesAssetType is present, its object must be an owl:Class.
+    sh:property [
+        sh:path cx:describesAssetType ;
+        sh:nodeKind sh:IRI ;
+        sh:severity sh:Violation ;
+        sh:message "cx:describesAssetType must point to an IRI (an owl:Class such as an IFC class)." ;
+    ] ;
+
+    # If cx:usesOntology is present, its object must be an IRI.
+    sh:property [
+        sh:path cx:usesOntology ;
+        sh:nodeKind sh:IRI ;
+        sh:severity sh:Violation ;
+        sh:message "cx:usesOntology must point to an ontology IRI." ;
+    ] ;
+
+    # If cx:alignsWithConcept is present, its object must be an IRI (a skos:Concept).
+    sh:property [
+        sh:path cx:alignsWithConcept ;
+        sh:nodeKind sh:IRI ;
+        sh:severity sh:Violation ;
+        sh:message "cx:alignsWithConcept must point to a skos:Concept IRI." ;
+    ] ;
+
+    # Soft guidance: a Construct-DCAT dataset should carry at least one
+    # semantic anchor, otherwise it adds nothing over baseline DCAT.
+    sh:or (
+        [ sh:path cx:describesAssetType ; sh:minCount 1 ]
+        [ sh:path cx:usesOntology ;       sh:minCount 1 ]
+        [ sh:path cx:hasAASSubmodel ;     sh:minCount 1 ]
+        [ sh:path cx:alignsWithConcept ;  sh:minCount 1 ]
+    ) ;
+    sh:severity sh:Warning ;
+    sh:message "A Construct-DCAT dataset should declare at least one semantic anchor (describesAssetType / usesOntology / hasAASSubmodel / alignsWithConcept)." .
