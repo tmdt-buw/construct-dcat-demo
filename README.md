@@ -41,6 +41,29 @@ results/
   results.md                  # generated metrics table
 ```
 
+## Quick start
+
+From the repository root:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python tests/run_discovery_demo.py
+```
+
+The script writes the regenerated table to [`results/results.md`](results/results.md).
+The expected outcome is:
+
+- baseline DCAT keyword search returns `D1, D2, D3`;
+- Construct-DCAT typed/subclass-aware search returns `D1, D5, D8`;
+- Construct-DCAT therefore reaches precision, recall, and F1 of `1.00` on this small
+  constructed example.
+
+The SHACL validation step may report a warning for intentionally weakly annotated
+records. Warnings are part of the demonstration: they show guidance for better semantic
+anchoring without blocking the discovery comparison.
+
 ## The competency question
 
 > **CQ:** Which datasets describe walls (IFC walls or their subtypes) **and** commit to
@@ -96,10 +119,10 @@ This returns exactly `D1, D5, D8`.
 
 (Regenerate with the script below; see [`results/results.md`](results/results.md).)
 
-## Run it
+## Reproduce the results
 
 ```bash
-pip install rdflib pyshacl owlrl
+pip install -r requirements.txt
 python tests/run_discovery_demo.py
 ```
 
@@ -107,6 +130,13 @@ The script (1) validates the catalog against the SHACL shapes, (2) runs both que
 and (3) prints and writes the precision/recall/F1 table. RDFS inference is applied so
 that `cx:BIMDataset`/`cx:AASDataset` instances are entailed to be `dcat:Dataset`
 instances, as they would be over an RDFS-aware triplestore.
+
+## Demo scope
+
+This repository is intentionally narrow. It demonstrates one competency question over a
+small catalog with known ground truth. It is useful for showing the discoverability gain
+from typed semantic anchors, but it should not be read as a benchmark of real-world
+catalog performance or as a complete DCAT-AP conformance package.
 
 ## Replacing the example with real editor output
 
