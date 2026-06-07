@@ -4,26 +4,32 @@ A small, self-contained demonstration that a **Construct-DCAT** profile improves
 *domain-aware discoverability* of construction datasets compared with baseline
 DCAT/DCAT-AP keyword search.
 
-This repository accompanies the poster *"Construct-DCAT: A Requirements-Driven DCAT
-Extension for Domain-Aware Discovery in Construction Dataspaces"* (SEMANTiCS 2026,
+This repository accompanies the poster *"Construct-DCAT: Semantic Anchoring for
+Domain-Aware Discovery in Construction Dataspaces"* (SEMANTiCS 2026,
 Posters & Demos).
 
 ## What this is (and is not)
 
-- The profile in [`profile/`](profile/) is a **minimal worked example** produced via the
-  requirements-driven workflow of our visual profile editor
+- The profile in [`profile/`](profile/) (`construct-dcat.ttl` and
+  `construct-dcat-shapes.ttl`) was **exported directly from our visual profile editor**
   ([tmdt-buw/visual-profile-editor](https://github.com/tmdt-buw/visual-profile-editor)).
-  Producing a profile in the editor requires **expert requirements input**; the example
-  here reflects one such minimal extension.
+  It is a deliberately **minimal** Construct-DCAT profile: two dataset subclasses and
+  four anchoring properties.
+
+The profile as authored in the visual profile editor:
+
+![Construct-DCAT profile in the visual profile editor](docs/editor-screenshot.png)
+
 - It is **conformant in principle**, not a full DCAT-AP profile: every `cx:*Dataset` is
   an `rdfs:subClassOf dcat:Dataset`, and the anchoring properties have `dcat:Dataset` in
   their domain, so any annotated record remains a valid `dcat:Dataset`. We do **not**
   claim DCAT-AP mandatory/recommended cardinalities, controlled-vocabulary obligations,
   or a formal conformance statement — those are future work.
 - The catalog and metrics are an **illustrative example on a small constructed catalog**,
-  built to expose specific failure modes of keyword search. The perfect Construct-DCAT
-  score is a property of this constructed example, **not** a real-world retrieval
-  benchmark. A large-scale evaluation on operational catalogs is future work.
+  built to expose specific failure modes of keyword search. The Construct-DCAT result
+  (precision/recall/F1 of 1.00 on this catalog) is a property of this constructed
+  example, **not** a real-world retrieval benchmark. A large-scale evaluation on
+  operational catalogs is future work.
 
 ## Repository layout
 
@@ -57,8 +63,9 @@ The expected outcome is:
 
 - baseline DCAT keyword search returns `D1, D2, D3`;
 - Construct-DCAT typed/subclass-aware search returns `D1, D5, D8`;
-- Construct-DCAT therefore reaches precision, recall, and F1 of `1.00` on this small
-  constructed example.
+- On this small constructed example, the Construct-DCAT query returns exactly the three
+  relevant datasets, so precision, recall, and F1 are all `1.00` — a property of this
+  illustrative catalog, not a real-world benchmark.
 
 The SHACL validation step may report a warning for intentionally weakly annotated
 records. Warnings are part of the demonstration: they show guidance for better semantic
@@ -66,14 +73,14 @@ anchoring without blocking the discovery comparison.
 
 ## The competency question
 
-> **CQ:** Which datasets describe walls (IFC walls or their subtypes) **and** commit to
+> **CQ:** Which datasets describe walls (IFC walls or their subtypes) **and** use
 > the Building Topology Ontology (BOT), regardless of lifecycle phase or file format?
 
 **Ground truth: `D1`, `D5`, `D8`.** Rationale per dataset:
 
 | id | describes | uses BOT | in answer? | why |
 |----|-----------|:--------:|:----------:|-----|
-| D1 | `ifc:IfcWall` | yes | ✅ | a wall, commits to BOT |
+| D1 | `ifc:IfcWall` | yes | ✅ | a wall, uses BOT |
 | D2 | (wall *schedule*) | yes | ❌ | a schedule, not a wall description |
 | D3 | `ifc:IfcSensor` | no | ❌ | wall-*mounted* sensor, not a wall |
 | D4 | `ifc:IfcDoor` | yes | ❌ | doors, not walls |
